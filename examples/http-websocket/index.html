@@ -344,6 +344,10 @@
         function startVP9() {
             start('vp9',false)
         }
+        function startAV1() {
+            start('av1',false)
+        }
+
 
 		function viewOnly(){
 			start(null,true)
@@ -354,6 +358,7 @@
             await startWs()
             document.getElementById("btnStartH264").disabled = true;
             document.getElementById("btnStartVP9").disabled = true;
+            document.getElementById("btnStartAV1").disabled = true;
 			document.getElementById("btnViewOnly").disabled = true;
 
 			if(!viewOnly){
@@ -507,7 +512,7 @@
             await peerConnection.setLocalDescription(offer)
 
             ws.send(JSON.stringify({type:'offer',data:offer.sdp}));
-			console.log("browser send")
+			console.log("browser send offer", offer.sdp)
 
             peerConnection.onicecandidate = function(e) {
                 if (e.candidate!=null) {
@@ -530,7 +535,7 @@
 			const isSvc = document.querySelector("#svc").checked
 			const maxBitrate = document.querySelector("#maxBitrate").value
 
-            if (codec ==='vp9' && !isFirefox){
+            if ((codec ==='vp9' || codec ==='av1')  && !isFirefox){
 				let videoTcvr = null
 
 				console.log("simulcast: ",isSimulcast)
@@ -580,23 +585,49 @@
                 const codecs = RTCRtpReceiver.getCapabilities('video').codecs;
                 let vp9_codecs = [];
                 // iterate over supported codecs and pull out the codecs we want
-                for(let i = 0; i < codecs.length; i++){
-                    if(codecs[i].mimeType == "video/VP9"){
-                        vp9_codecs.push(codecs[i]);
-                    }
-                }
+		if(codec === 'vp9'){
+			for(let i = 0; i < codecs.length; i++){
+			    if(codecs[i].mimeType == "video/VP9"){
+				vp9_codecs.push(codecs[i]);
+			    }
+			}
 
-                // push the rest of the codecs
-                for(let i = 0; i < codecs.length; i++){
-                    if(codecs[i].mimeType != "video/VP9"){
-                        vp9_codecs.push(codecs[i]);
-                    }
-                }
+			// push the rest of the codecs
+			for(let i = 0; i < codecs.length; i++){
+			    if(codecs[i].mimeType != "video/VP9"){
+				vp9_codecs.push(codecs[i]);
+			    }
+			}
 
-                // currently not all browsers support setCodecPreferences
-                if(videoTcvr.setCodecPreferences != undefined){
-                    videoTcvr.setCodecPreferences(vp9_codecs);
-                }
+			// currently not all browsers support setCodecPreferences
+			if(videoTcvr.setCodecPreferences != undefined){
+			 //   videoTcvr.setCodecPreferences(vp9_codecs);
+			}
+	    }
+
+	    if(codec === 'av1'){
+			for(let i = 0; i < codecs.length; i++){
+			    if(codecs[i].mimeType == "video/AV1"){
+	    		    	console.log("Pushing  codec: ", codecs[i].mimeType)
+				vp9_codecs.push(codecs[i]);
+			    }
+			}
+
+			// push the rest of the codecs
+			for(let i = 0; i < codecs.length; i++){
+			    if(codecs[i].mimeType != "video/AV1"){
+	    		    	console.log("pushing  codec: ", codecs[i].mimeType)
+			//	vp9_codecs.push(codecs[i]);
+			    }
+			}
+
+			// currently not all browsers support setCodecPreferences
+			if(videoTcvr.setCodecPreferences != undefined){
+			    videoTcvr.setCodecPreferences(vp9_codecs);
+			}
+	    }
+
+
             } else {
 				let videoTcvr = null
 				if (!isSimulcast){
@@ -1029,6 +1060,7 @@
 			document.getElementById("btnViewOnly").onclick = viewOnly;
             document.getElementById("btnStartH264").onclick = startH264;
             document.getElementById("btnStartVP9").onclick = startVP9;
+            document.getElementById("btnStartAV1").onclick = startAV1;
 			document.getElementById("btnToggleMic").onclick = toggleMic;
 			document.getElementById("btnToggleCam").onclick = toggleCam;
             document.getElementById("btnShareScreen").onclick = shareScreen;
@@ -1053,6 +1085,7 @@
     <footer>
         <button id="btnStartH264">Start H264</button>
         <button id="btnStartVP9">Start with VP9</button>
+        <button id="btnStartAV1">Start with AV1</button>
 		<button id="btnViewOnly">View only</button>
 		<button id="btnToggleMic">Mute Mic</button>
 		<button id="btnToggleCam">Mute Cam</button>

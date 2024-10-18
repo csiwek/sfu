@@ -177,19 +177,17 @@ MessageLoop:
 		case <-ctx.Done():
 			break MessageLoop
 		default:
-			for {
-				decoder := json.NewDecoder(conn)
-				var req Request
-				err := decoder.Decode(&req)
-				if err != nil {
-					if err.Error() == "EOF" {
-						continue
-					}
-
-					logger.Infof("error decoding message", err)
+			decoder := json.NewDecoder(conn)
+			var req Request
+			err := decoder.Decode(&req)
+			if err != nil {
+				if err.Error() == "EOF" {
+					continue
 				}
-				messageChan <- req
+
+				logger.Infof("error decoding message", err)
 			}
+			messageChan <- req
 		}
 	}
 }

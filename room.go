@@ -76,7 +76,7 @@ type RoomOptions struct {
 	// Make sure to use the same bitrate config when publishing video because this is used to manage the usage bandwidth in this room
 	Bitrates BitrateConfigs `json:"bitrates,omitempty"`
 	// Configures the codecs that will be used by the room
-	Codecs *[]string `json:"codecs,omitempty" enums:"video/VP9,video/H264,video/VP8,audio/red,audio/opus" example:"video/VP9,video/H264,video/VP8,audio/red,audio/opus"`
+	Codecs *[]string `json:"codecs,omitempty" enums:"video/AV1,video/VP9,video/H264,video/VP8,audio/red,audio/opus" example:"video/VP9,video/H264,video/VP8,audio/red,audio/opus"`
 	// Configures the interval in nanoseconds of sending PLIs to clients that will generate keyframe, default is 0 means it will use auto PLI request only when needed.
 	// More often means more bandwidth usage but more stability on video quality when packet loss, but client libs supposed to request PLI automatically when needed.
 	PLIInterval *time.Duration `json:"pli_interval_ns,omitempty" example:"0"`
@@ -93,7 +93,7 @@ func DefaultRoomOptions() RoomOptions {
 	return RoomOptions{
 		Bitrates:         DefaultBitrates(),
 		QualityLevels:    DefaultQualityLevels(),
-		Codecs:           &[]string{webrtc.MimeTypeVP9, webrtc.MimeTypeH264, webrtc.MimeTypeVP8, "audio/red", webrtc.MimeTypeOpus},
+		Codecs:           &[]string{webrtc.MimeTypeAV1, webrtc.MimeTypeVP9, webrtc.MimeTypeH264, webrtc.MimeTypeVP8, "audio/red", webrtc.MimeTypeOpus},
 		PLIInterval:      &pli,
 		EmptyRoomTimeout: &emptyDuration,
 	}

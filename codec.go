@@ -2,6 +2,7 @@ package sfu
 
 import (
 	"encoding/binary"
+	"fmt"
 	"log"
 	"strings"
 	"time"
@@ -97,6 +98,11 @@ var (
 			RTPCodecCapability: webrtc.RTPCodecCapability{"video/rtx", 90000, 0, "apt=96", nil},
 			PayloadType:        97,
 		},
+		{
+			//RTPCodecCapability: webrtc.RTPCodecCapability{webrtc.MimeTypeAV1, 90000, 0, "", videoRTCPFeedback},
+			RTPCodecCapability: webrtc.RTPCodecCapability{MimeType: webrtc.MimeTypeAV1, ClockRate: 90000, Channels: 0, SDPFmtpLine: "", RTCPFeedback: videoRTCPFeedback},
+			PayloadType:        45,
+		},
 	}
 
 	audioCodecs = []webrtc.RTPCodecParameters{
@@ -171,7 +177,8 @@ func RegisterCodecs(m *webrtc.MediaEngine, codecs []string) error {
 			}
 		}
 	}
-
+	fmt.Printf("Registered codecs %v \n\n\n\n", registeredVideoCodecs)
+	fmt.Printf("Registered codecs errors %v \n\n\n\n", errors)
 	return FlattenErrors(errors)
 }
 
