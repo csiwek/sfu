@@ -2,7 +2,6 @@ package sfu
 
 import (
 	"encoding/binary"
-	"fmt"
 	"log"
 	"strings"
 	"time"
@@ -177,8 +176,6 @@ func RegisterCodecs(m *webrtc.MediaEngine, codecs []string) error {
 			}
 		}
 	}
-	fmt.Printf("Registered codecs %v \n\n\n\n", registeredVideoCodecs)
-	fmt.Printf("Registered codecs errors %v \n\n\n\n", errors)
 	return FlattenErrors(errors)
 }
 
